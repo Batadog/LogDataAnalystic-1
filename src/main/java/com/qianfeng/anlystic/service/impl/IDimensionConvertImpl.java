@@ -55,6 +55,8 @@ public class IDimensionConvertImpl implements IDimensionConvert{
                 sqls = this.buildKpiSqls(dimension);
             } else if(dimension instanceof LocationDimension){
                 sqls = this.buildLocalSqls(dimension);
+            } else if(dimension instanceof EventDimension){
+                sqls = this.buildEventSqls(dimension);
             } else {
                 throw new RuntimeException("dimension维度暂不支持.");
             }
@@ -114,6 +116,12 @@ public class IDimensionConvertImpl implements IDimensionConvert{
         return new String[]{query,insert};
     }
 
+    private String[] buildEventSqls(BaseDimension dimension) {
+        String query = "select id from `dimension_event` where `category` = ? and  `action` = ?";
+        String insert = "insert into `dimension_event`(`category`, `action`) values(?,?)";
+        return new String[]{query,insert};
+    }
+
 
     /**
      * 构建每一个dimension的key
@@ -150,6 +158,11 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             sb.append(local.getCountry());
             sb.append(local.getProvince());
             sb.append(local.getCity());
+        }  else if(dimension instanceof EventDimension){
+            sb.append("event_");
+            EventDimension event = (EventDimension) dimension;
+            sb.append(event.getCategory());
+            sb.append(event.getAction());
         } else {
             throw new RuntimeException("dimension维度暂不支持.");
         }
@@ -227,6 +240,10 @@ public class IDimensionConvertImpl implements IDimensionConvert{
                 ps.setString(++i,local.getCountry());
                 ps.setString(++i,local.getProvince());
                 ps.setString(++i,local.getCity());
+            } else if(dimension instanceof EventDimension){
+                EventDimension event = (EventDimension) dimension;
+                ps.setString(++i,event.getCategory());
+                ps.setString(++i,event.getAction());
             } else {
                 throw new RuntimeException("dimension维度暂不支持.");
             }

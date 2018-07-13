@@ -70,6 +70,13 @@
             <version>5.1.38</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-exec</artifactId>
+            <version>0.13.1</version>
+        </dependency>
+
+
 
     </dependencies>
 
