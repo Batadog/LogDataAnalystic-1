@@ -119,3 +119,8 @@ sqoop export --connect jdbc:mysql://hadoop01:3306/result \
 
 
 
+
+
+
+aaaaaa
+cccccc
