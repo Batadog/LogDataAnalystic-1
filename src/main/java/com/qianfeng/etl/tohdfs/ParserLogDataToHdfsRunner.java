@@ -33,7 +33,7 @@ public class ParserLogDataToHdfsRunner implements Tool{
 			logger.warn("run parser log data exception:"+e);
 		}
 	}
-	
+
 	@Override
 	public void setConf(Configuration conf) {
 		this.conf = HBaseConfiguration.create();
@@ -52,16 +52,16 @@ public class ParserLogDataToHdfsRunner implements Tool{
 		Configuration conf = getConf();
 		//处理参数
 		this.handleArgs(args,conf);
-		
+
 		//获取job
 		Job job = Job.getInstance(conf, "parserLogDataToHdfs");
 		job.setJarByClass(ParserLogDataToHdfsRunner.class);
 		job.setMapperClass(ParserLogDataMapperToHdfs.class);
 		job.setMapOutputKeyClass(LogDataWritable.class);
 		job.setMapOutputValueClass(NullWritable.class);
-		
+
 		job.setNumReduceTasks(0);
-		
+
 		//设置输入路径
 		this.setInputPath(job);
 		return job.waitForCompletion(true)?0:1;
@@ -83,7 +83,7 @@ public class ParserLogDataToHdfsRunner implements Tool{
 				}
 			}
 		}
-		
+
 		//将取出来时间判断是否合法。如果不和法，默认执行昨天数据。具体格式：yyyy-MM-dd
 		/*if(StringUtils.isBlank(date) || !TimeUtil.dateIsRunnable(date)){
 			date = TimeUtil.getYesterday();
@@ -91,8 +91,8 @@ public class ParserLogDataToHdfsRunner implements Tool{
 		//将具体的时间设置到conf中
 		conf.set("running_date", date);
 	}
-	
-	
+
+
 	/**
 	 * 设置输入路径
 	 * @param job
@@ -112,7 +112,7 @@ public class ParserLogDataToHdfsRunner implements Tool{
 			} else {
 				throw new RuntimeException("your input path is not avliable.inputpath is:"+inpath.toString());
 			}
-			
+
 			Path outpath = new Path("/ods/month="+fields[1]+"/day="+fields[2]);
 			//Path outpath = new Path("E://hadoopdata//out//11");
 			if(fs.exists(outpath)){

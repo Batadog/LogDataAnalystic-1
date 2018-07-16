@@ -39,7 +39,7 @@ websit 2018-07-09 pv60pluss 5
 
 
 ##创建最终的结果表
-CREATE external TABLE if not exists dm_view (
+CREATE TABLE if not exists dm_view (
   `platform_dimension_id` int,
   `data_dimension_id` int,
   `kpi_dimension_id` int,
@@ -86,8 +86,38 @@ group by pl,dt,pv
 
 
 ##扩维
-select pl dt pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5,... count from tmp where col=pv1 union all
-select pl dt 0 as pv1,pv2,.... count from tmp where col=pv2 union all
-...
+with tmp as(
+select pl,dt,ct as pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv1" union all
+select pl,dt,0 as pv1,ct as pv2,0 as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv2" union all
+select pl,dt,0 as pv1,0 as pv2,ct as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv3" union all
+select pl,dt,0 as pv1,0 as pv2,0 as pv3,ct as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv4" union all
+select pl,dt,0 as pv1,0 as pv2,0 as pv3,0 as pv4,ct as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv5_10" union all
+select pl,dt,0 as pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5_10,ct as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv10_30" union all
+select pl,dt,0 as pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,ct as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv30_60" union all
+select pl,dt,0 as pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,ct as pv60pluss from dw_view_tmp where col="pv60pluss" union all
+select "all" as pl,dt,ct as pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv1" union all
+select "all" as pl,dt,0 as pv1,ct as pv2,0 as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv2" union all
+select "all" as pl,dt,0 as pv1,0 as pv2,ct as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv3" union all
+select "all" as pl,dt,0 as pv1,0 as pv2,0 as pv3,ct as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv4" union all
+select "all" as pl,dt,0 as pv1,0 as pv2,0 as pv3,0 as pv4,ct as pv5_10,0 as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv5_10" union all
+select "all" as pl,dt,0 as pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5_10,ct as pv10_30,0 as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv10_30" union all
+select "all" as pl,dt,0 as pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,ct as pv30_60,0 as pv60pluss from dw_view_tmp where col="pv30_60" union all
+select "all" as pl,dt,0 as pv1,0 as pv2,0 as pv3,0 as pv4,0 as pv5_10,0 as pv10_30,0 as pv30_60,ct as pv60pluss from dw_view_tmp where col="pv60pluss"
+)
+from tmp
+insert into table dm_view
+select platform_convert(pl),date_convert(dt),2,sum(pv1),sum(pv2),sum(pv3),sum(pv4),sum(pv5_10),sum(pv10_30),sum(pv30_60),sum(pv60pluss),'2018-07-09'
+group by pl,dt
+;
+
+--使用sqoop语句将hive中的最终结果导出到mysql
+sqoop export --connect jdbc:mysql://hadoop01:3306/result \
+--username root --password root --table stats_view_depth \
+--export-dir '/hive/lda.db/dm_view/*' \
+--input-fields-terminated-by "\\01" --update-mode allowinsert \
+--update-key platform_dimension_id,date_dimension_id \
+;
+
+
 
 

@@ -1,47 +1,47 @@
 package com.qianfeng.anlystic.hive;
 
-import com.qianfeng.anlystic.modle.dim.base.DateDimension;
 import com.qianfeng.anlystic.modle.dim.base.PlatformDimension;
 import com.qianfeng.anlystic.service.IDimensionConvert;
 import com.qianfeng.anlystic.service.impl.IDimensionConvertImpl;
-import com.qianfeng.common.DateEnum;
 import com.qianfeng.common.GlobalConstants;
-import com.qianfeng.util.TimeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
 
-import java.io.IOException;
 
 /**
- * @Auther: lyd
- * @Date: 2018/7/12 14:48
- * @Description:获取平台维度的id的udf
+ *
  */
-public class PlatformDimensionUdf extends UDF{
-    IDimensionConvert convert = new IDimensionConvertImpl();
+public class PlatformDimensionUdf extends UDF {
+    public IDimensionConvert converter =null;
+
+    public PlatformDimensionUdf() {
+        this.converter =new IDimensionConvertImpl();
+    }
 
     /**
-     *
+     * 根据平台名称获取对应的平台维度Id
+     * @param platformName
      * @return
      */
-    public int evaluate(String paltformName){
-        if(StringUtils.isEmpty(paltformName)){
-            paltformName = GlobalConstants.DEFAULT_VALUE;
-        }
-        //构建时间维度
-        PlatformDimension platformDimension = new PlatformDimension(paltformName);
+    public IntWritable evaluate(String  platformName){
 
+        if (StringUtils.isEmpty(platformName.toString())){
+            platformName= GlobalConstants.DEFAULT_VALUE;
+        }
+
+
+        //获取平台维度
+        PlatformDimension platformDimension =new PlatformDimension(platformName);
         try {
-            return convert.getDimensionIdByValue(platformDimension);
-        } catch (IOException e) {
-            throw new RuntimeException("获取平台维度的udf异常.");
+            return new IntWritable(converter.getDimensionIdByValue(platformDimension));
+        } catch (Exception e) {
+            throw new RuntimeException("获取平台维度ID异常"+e);
         }
     }
 
     public static void main(String[] args) {
         System.out.println(new PlatformDimensionUdf().evaluate("website"));
     }
-
 }
+

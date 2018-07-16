@@ -34,8 +34,8 @@ public class LogUtil {
                 //将参数列表中的k-v解析存储到info
                 //获取？之后的参数列表
                 int index = fields[3].indexOf("?");
-                if(index > 0){
-                    //获取requestbody
+                    if(index > 0){
+                        //获取requestbody
                     String requestBody = fields[3].substring(index+1);
                     //处理参数
                     handleParams(requestBody,info);

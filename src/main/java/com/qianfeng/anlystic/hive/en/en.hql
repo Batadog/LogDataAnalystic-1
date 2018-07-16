@@ -37,6 +37,7 @@ row format delimited fields terminated by '\001'
 
 --加载数据
 load data inpath '/ods/month=07/day=09' into table ods_logs partition(month=07,day=09);
+load data inpath '/ods/month=07/day=10' into table ods_logs partition(month=07,day=10);
 
 
 --在原始表中抽取数据，放在dw层
@@ -55,6 +56,7 @@ row format delimited fields terminated by '\001'
 from ods_logs
 insert into table dw_event partition(month=07,day=09)
 select s_time,en,pl,ca,ac;
+
 
 --创建一个和结果表一模一样的临时表：
   create external table if not exists dm_event(
