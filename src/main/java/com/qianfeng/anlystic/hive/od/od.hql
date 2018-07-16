@@ -116,3 +116,6 @@ sqoop export --connect jdbc:mysql://hadoop01:3306/result \
 --update-key platform_dimension_id,date_dimension_id,currency_type_dimension_id,payment_type_dimension_id \
 --columns 'platform_dimension_id,date_dimension_id,currency_type_dimension_id,payment_type_dimension_id,orders,created'
 ;
+
+
+
