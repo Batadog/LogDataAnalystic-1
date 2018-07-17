@@ -72,7 +72,7 @@ public class LocationRunner implements Tool{
         List<Scan> scans = this.getScans(job);
         TableMapReduceUtil.initTableMapperJob(scans,LocationMapper.class,
                 StatsLocationDimension.class,TextOutputValue.class,job,
-                false);
+                true);
 
         //本地提交集群运行
         /*TableMapReduceUtil.initTableMapperJob(scans,ActiveUserMapper.class,

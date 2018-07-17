@@ -65,7 +65,7 @@ public class ActiveMemberRunner implements Tool{
         List<Scan> scans = this.getScans(job);
         TableMapReduceUtil.initTableMapperJob(scans,ActiveMemberMapper.class,
                 StatsUserDimension.class,TimeOutputValue.class,job,
-                false);
+                true);
 
         //本地提交集群运行
         /*TableMapReduceUtil.initTableMapperJob(scans,ActiveMemberMapper.class,
