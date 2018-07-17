@@ -76,7 +76,7 @@ public class PageViewRunner implements Tool{
         List<Scan> scans = this.getScans(job);
         TableMapReduceUtil.initTableMapperJob(scans,PageViewMapper.class,
                 StatsUserDimension.class,Text.class,job,
-                false);
+                true);
 
         //本地提交集群运行
         /*TableMapReduceUtil.initTableMapperJob(scans,PageViewMapper.class,
