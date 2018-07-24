@@ -67,7 +67,7 @@ public class ParseLogRunner implements Tool{
         //初始化reduce addDependencyJars:false 本地提交本地运行，反之等于true是集群运行
         TableMapReduceUtil.initTableReducerJob(EventLogConstants.EVENT_LOG_HBASE_NAME,
                 null,job,null,null,null,
-                null,false);
+                null,true);
         job.setNumReduceTasks(0);
 
 
